@@ -1,0 +1,93 @@
+function DeleteButton(props) {
+  return (
+    <button id={props.id} onClick={props.onClick}>
+      delete this item {props.id}
+    </button>
+  );
+}
+
+class ListItem extends React.Component {
+    constructor(props) {
+      super(props);
+      this.state = {
+        key:"",
+        value:"",
+      };
+      this.handleChange = this.handleChange.bind(this);
+    }
+    
+   handleChange(event){
+        const target = event.target;
+        const value = target.value;
+        const name = target.name;
+        this.setState({
+          [name]: value
+        });
+    }
+  
+    render() {
+      return(
+        <div>
+          <form>
+             <label>
+              the key word
+            <input type="text" name="key" value={this.state.key} onChange={this.handleChange} />
+          </label>
+          <br/>
+          <label>
+            the description
+            <input type="text" name="value" value={this.state.value} onChange={this.handleChange} />
+          </label>
+          <br/>
+         </form>
+          <DeleteButton id={this.props.id}  onClick={() => this.props.handleDelete(this.props.id)} />
+         <br/>
+         <br/>
+        </div>
+      );
+    }
+}
+
+
+class List extends React.Component {
+   constructor(props) {
+      super(props);
+      this.state = {
+          list : [0,1,2],
+          current: 3
+      };
+      this.addItem = this.addItem.bind(this);
+    }
+   
+   addItem(){
+     this.state.list.push(this.state.current);
+     this.setState({
+          current: this.state.current +1
+     }); 
+   }
+   
+  handleDelete(number){
+     var position = this.state.list.indexOf(number);
+     var beingModifyList = this.state.list;
+     beingModifyList.splice(position, 1);
+     if ( ~position ) {
+       this.setState({
+          list: beingModifyList
+        });
+      }    
+   }
+   
+   render() {
+    const listItems = this.state.list.map((number) =><ListItem key={number} id={number} handleDelete= {number => this.handleDelete(number)} />);
+    return (
+        <div>
+         {listItems}
+         <br/>                       
+         <button onClick={this.addItem}> add a new item</button>
+        </div>
+      );  
+   }
+}
+
+ReactDOM.render(<List/>, document.getElementById("root"));
+

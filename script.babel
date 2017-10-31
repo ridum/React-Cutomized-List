@@ -1,3 +1,5 @@
+//define a result out of react to stimulate result export
+var result=[];
 function DeleteButton(props) {
   return (
     <button id={props.id} onClick={props.onClick}>
@@ -17,12 +19,17 @@ class ListItem extends React.Component {
     }
     
    handleChange(event){
+
         const target = event.target;
         const value = target.value;
         const name = target.name;
         this.setState({
           [name]: value
         });
+        var itemID = this.props.id;
+        var resultPosition = result.findIndex(function(e){return e.id == itemID});
+        
+        result[resultPosition][name]=value;
     }
   
     render() {
@@ -53,8 +60,8 @@ class List extends React.Component {
    constructor(props) {
       super(props);
       this.state = {
-          list : [0,1,2],
-          current: 3
+          list : [],
+          current: 0
       };
       this.addItem = this.addItem.bind(this);
     }
@@ -64,26 +71,33 @@ class List extends React.Component {
      this.setState({
           current: this.state.current +1
      }); 
+     
+     result.push({id:this.state.current,key:"",value:""});
+
    }
    
   handleDelete(number){
      var position = this.state.list.indexOf(number);
      var beingModifyList = this.state.list;
-     beingModifyList.splice(position, 1);
-     if ( ~position ) {
-       this.setState({
-          list: beingModifyList
-        });
-      }    
+     beingModifyList.splice(position, 1); 
+     this.setState({list: beingModifyList}); 
+     
+    var resultPosition = result.findIndex(function(e){return e.id == number});
+    result.splice(resultPosition, 1);       
    }
+  
+  printResult(){
+    console.log(result);
+  }
    
-   render() {
+  render() {
     const listItems = this.state.list.map((number) =><ListItem key={number} id={number} handleDelete= {number => this.handleDelete(number)} />);
     return (
         <div>
          {listItems}
          <br/>                       
-         <button onClick={this.addItem}> add a new item</button>
+         <button onClick={this.addItem}> Add a new item</button>
+         <button onClick={this.printResult}> See Result in console</button>
         </div>
       );  
    }

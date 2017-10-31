@@ -1,4 +1,4 @@
-customized jquery list
+Customized List Skeleton
 ----------------------
 
 
